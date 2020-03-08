@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">指南针</string>
+    <string name="n">北</string>
+    <string name="s">南</string>
+    <string name="e">东</string>
+    <string name="w">西</string>
+    <string name="wn">西北</string>
+    <string name="ws">西南</string>
+    <string name="en">东北</string>
+    <string name="es">东南</string>
+</resources>
