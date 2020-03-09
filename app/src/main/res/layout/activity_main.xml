@@ -50,7 +50,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:textSize="22sp"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         android:layout_centerHorizontal="true"/>
     <TextView
         android:id="@+id/tv_lgt"
@@ -58,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_test"
         android:layout_marginTop="2dp"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:layout_centerHorizontal="true"/>
     <TextView
         android:id="@+id/tv_altitude"
@@ -66,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_lgt"
         android:layout_marginTop="2dp"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:layout_centerHorizontal="true"/>
     <TextView
         android:id="@+id/tv_temperature"

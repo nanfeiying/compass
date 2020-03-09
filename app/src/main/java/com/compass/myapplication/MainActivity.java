@@ -7,8 +7,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +22,7 @@ import com.compass.myapplication.gps.GPSLocationListener;
 import com.compass.myapplication.gps.GPSLocationManager;
 import com.compass.myapplication.gps.GPSProviderStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Sensor mSensor=null;  //重力
     private Sensor mTemperatureSensor=null; //温度
     private GPSLocationManager gpsLocationManager;
-
+    private ArrayList<Double> mHeight = new ArrayList<>();
     float[] accelerometerValues=new float[3];
     float[] magneticFieldValues=new float[3];
     float[] values=new float[3];
@@ -82,13 +85,30 @@ public class MainActivity extends AppCompatActivity {
         sm.registerListener(myListener, mTemperatureSensor, SensorManager.SENSOR_DELAY_UI);
     }
     private void initData(){
-        if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED || checkSelfPermission
-                (android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION},1);
-            return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int result = checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION);
+            if (result != PackageManager.PERMISSION_GRANTED){
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            } else {
+                gpsLocationManager = GPSLocationManager.getInstances(MainActivity.this);
+                //开启定位
+                gpsLocationManager.start(new MyListener());
+            }
+        } else {
+            gpsLocationManager = GPSLocationManager.getInstances(MainActivity.this);
+            //开启定位
+            gpsLocationManager.start(new MyListener());
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        for (int i : grantResults){
+            if (i != PackageManager.PERMISSION_GRANTED){
+                return;
+            }
         }
         gpsLocationManager = GPSLocationManager.getInstances(MainActivity.this);
         //开启定位
@@ -158,8 +178,18 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void UpdateLocation(Location location) {
             if (location != null) {
-                mTvLgt.setText("经度：" + location.getLongitude() + "   纬度：" + location.getLatitude());
-                mTvAltitude.setText("海拔：" + location.getAltitude());
+                mTvLgt.setText("经度：" + String.format("%.2f",location.getLongitude()) + "   纬度：" + String.format("%.2f",location.getLatitude()));
+                if (mHeight.size() > 10){
+                    mHeight.remove(0);
+                    mHeight.add(location.getAltitude());
+                }else {
+                    mHeight.add(location.getAltitude());
+                }
+                double height = 0;
+                for (double d : mHeight){
+                    height += d;
+                }
+                mTvAltitude.setText("海拔：" + (int)(height/mHeight.size()) +"米");
             }
         }
 

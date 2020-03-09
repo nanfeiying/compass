@@ -140,9 +140,9 @@ public class GPSLocationManager {
         Criteria c = new Criteria();
         c.setAccuracy(Criteria.ACCURACY_FINE);//高精度
         c.setAltitudeRequired(true);//包含高度信息
-        c.setBearingRequired(false);//包含方位信息
-        c.setSpeedRequired(false);//包含速度信息
-        c.setCostAllowed(false);//允许付费
+        c.setBearingRequired(true);//包含方位信息
+        c.setSpeedRequired(true);//包含速度信息
+        c.setCostAllowed(true);//允许付费
         c.setPowerRequirement(Criteria.POWER_HIGH);//高耗电
         return c;
     }
